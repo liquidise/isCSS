@@ -6,18 +6,18 @@ def parseStyleAndClass( line ):
 
 	retval = {}
 	if styleAttr:
-		retval["styleAttr"] = cleanStyles( styleAttr.group(1) )
+		retval["styleAttr"] = cleanInput( styleAttr.group(1), ";" )
 	if classAttr:
-		retval["classAttr"] = classAttr.group(1)
+		retval["classAttr"] = cleanInput( classAttr.group(1), "\s+" )
 
 	return retval
 
-def cleanStyles( styles ):
+def cleanInput( styles, regex ):
     retval = []
-    for style in styles.split(";"):
+    for style in re.split( regex, styles ):
         cleanStyle = style.strip()
         if cleanStyle:
-            retval.append( cleanStyle )
+            retval += [ cleanStyle ]
 
     return retval
 
