@@ -1,6 +1,7 @@
 import argparse, re, string
 
 def parseStyleAndClass( line ):
+	tagName = re.search( "<([a-z]+)", line ).group(1)
 	classAttr = re.search( "class\s*=\s*['\"]([^'\"]*)['\"]", line )
 	styleAttr = re.search( "style\s*=\s*['\"]([^'\"]*)['\"]", line )
 
@@ -10,18 +11,19 @@ def parseStyleAndClass( line ):
 	if classAttr:
 		retval["classAttr"] = cleanInput( classAttr.group(1), "\s+" )
 
+	print tagName,
+
 	return retval
 
 def cleanInput( styles, regex ):
-    retval = []
-    for style in re.split( regex, styles ):
-        cleanStyle = style.strip()
-        if cleanStyle:
-            retval += [ cleanStyle ]
+	retval = []
+	for style in re.split( regex, styles ):
+		cleanStyle = style.strip()
+		if cleanStyle:
+			retval += [ cleanStyle ]
 
-    return retval
-
-# def injectClasses( line ):
+	retval.sort()
+	return retval
 
 args = argparse.ArgumentParser()
 args.add_argument( "--html", required = True )
@@ -32,8 +34,7 @@ cssPath = args.parse_args().css
 
 htmlF = open( htmlPath, "r+" )
 if cssPath:
-    cssF = open( cssPath, "r+" )
-
+	cssF = open( cssPath, "r+" )
 
 for line in htmlF:
 	if re.search("<[a-z]+[^>]+style\s*=\s*", line):
