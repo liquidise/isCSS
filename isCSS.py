@@ -1,3 +1,4 @@
+from BeautifulSoup import BeautifulSoup
 import argparse, re, string
 
 def parseStyleAndClass( line ):
