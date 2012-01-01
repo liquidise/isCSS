@@ -19,11 +19,9 @@ args = argparse.ArgumentParser()
 args.add_argument( "--html", required = True )
 args.add_argument( "--css", required = False )
 
-htmlPath = args.parse_args().html
+htmlF = open( args.parse_args().html, "r+" )
+
 cssPath = args.parse_args().css
-
-htmlF = open( htmlPath, "r+" )
-
 if cssPath:
 	cssF = open( cssPath, "r+" )
 
@@ -44,11 +42,12 @@ for element in soup.findAll( attrs={"style": re.compile(".*")} ):
 		count += 1
 
 	if "class" in element:
-		element['class'] += newClassName
+		print element['class']
+		element['class'] += " " + newClassName
 	else:
 		element['class'] = newClassName
 
 	printCSS( newClassName, styles )
 	del element['style']
 
-print soup
+htmlF.write( str(soup) )

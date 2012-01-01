@@ -7,6 +7,9 @@ isCSS (inline style CSS) is a parser and compiler that parses inline styles in a
 
 The HTML file is edited to replace all inline styles with their new CSS classes
 
+Usage
+-----
+
 Dependancies
 ------------
 * BeautifulSoup
