@@ -1,21 +1,6 @@
 from BeautifulSoup import BeautifulSoup
 import argparse, re, string
 
-def parseStyleAndClass( line ):
-	tagName = re.search( "<([a-z]+)", line ).group(1)
-	classAttr = re.search( "class\s*=\s*['\"]([^'\"]*)['\"]", line )
-	styleAttr = re.search( "style\s*=\s*['\"]([^'\"]*)['\"]", line )
-
-	retval = {}
-	if styleAttr:
-		retval["styleAttr"] = cleanInput( styleAttr.group(1), ";" )
-	if classAttr:
-		retval["classAttr"] = cleanInput( classAttr.group(1), "\s+" )
-
-	print tagName,
-
-	return retval
-
 def cleanInput( styles, regex ):
 	retval = []
 	for style in re.split( regex, styles ):
@@ -25,6 +10,10 @@ def cleanInput( styles, regex ):
 
 	retval.sort()
 	return retval
+
+def printCSS( name, styles ):
+	print "." + name + " {\n\t" + string.join( styles, ";\n\t" ) + ";\n}"
+
 
 args = argparse.ArgumentParser()
 args.add_argument( "--html", required = True )
@@ -40,15 +29,26 @@ if cssPath:
 
 soup = BeautifulSoup( htmlF )
 
+count = 0
 for element in soup.findAll( attrs={"style": re.compile(".*")} ):
-    style = element['style']
-    del element['style']
+	classes = None
+	newClassName = None
+	styles = cleanInput( element['style'], ";" )
 
-    element['class'] = "MOOO"
-#    print element.prettify()
+	if "is" in element:
+		newClassName = element['is']
+	elif "id" in element:
+		newClassName = element['id']
+	else:
+		newClassName = "newClass" + str(count)
+		count += 1
 
-#	if re.search("<[a-z]+[^>]+style\s*=\s*", line):
-#		print parseStyleAndClass( line )
+	if "class" in element:
+		element['class'] += newClassName
+	else:
+		element['class'] = newClassName
 
+	printCSS( newClassName, styles )
+	del element['style']
 
 print soup
