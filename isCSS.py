@@ -34,9 +34,21 @@ htmlPath = args.parse_args().html
 cssPath = args.parse_args().css
 
 htmlF = open( htmlPath, "r+" )
+
 if cssPath:
 	cssF = open( cssPath, "r+" )
 
-for line in htmlF:
-	if re.search("<[a-z]+[^>]+style\s*=\s*", line):
-		print parseStyleAndClass( line )
+soup = BeautifulSoup( htmlF )
+
+for element in soup.findAll( attrs={"style": re.compile(".*")} ):
+    style = element['style']
+    del element['style']
+
+    element['class'] = "MOOO"
+#    print element.prettify()
+
+#	if re.search("<[a-z]+[^>]+style\s*=\s*", line):
+#		print parseStyleAndClass( line )
+
+
+print soup
